@@ -1,0 +1,16 @@
+numpy
+matplotlib
+pandas
+scipy
+statsmodels
+scikit-learn
+scienceplots
+pyarrow
+xarray
+netcdf4
+pgeocode
+pyproj
+jupyter
+nbformat
+nbconvert
+nbstripout

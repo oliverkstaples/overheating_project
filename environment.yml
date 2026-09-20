@@ -1,0 +1,41 @@
+# Conda environment for the EFUS overheating workflow (Python + R).
+#   conda env create -f environment.yml
+#   conda activate efus
+#
+# Built from the imports actually present in python/, R/ and the notebooks; it has not
+# been exported from the original environment (which lived on an old Linux machine).
+# Figures use scienceplots' "science" style, which also needs a system LaTeX install.
+name: efus
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  # --- Python ---
+  - numpy
+  - pandas
+  - scipy
+  - statsmodels
+  - scikit-learn
+  - matplotlib
+  - pyarrow
+  - xarray
+  - netcdf4            # xarray backend for the UKCP18 .nc files
+  - pgeocode
+  - pyproj
+  - jupyter
+  - nbformat
+  - nbconvert
+  - nbstripout         # git clean filter: keeps notebook outputs out of commits
+  - pip
+  - pip:
+      - scienceplots
+  # --- R ---
+  - r-base
+  - r-nlme
+  - r-arrow
+  - r-dplyr
+  - r-lubridate
+  - r-geepack
+  # R package `clubSandwich` (used by R/efus_overheating_models.R) is not on conda-forge;
+  # after creating the env, install it from CRAN:
+  #   Rscript -e 'install.packages("clubSandwich", repos = "https://cloud.r-project.org")'

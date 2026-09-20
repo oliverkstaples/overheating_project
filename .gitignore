@@ -1,0 +1,24 @@
+# --- Data: never committed (see README, "Data") ---
+*.parquet
+*.nc
+test_data/
+
+# --- Generated outputs: recreate by running the pipeline ---
+analysis/
+diagnostics/
+plots/
+
+# --- Local / machine-specific ---
+CLAUDE.md
+.claude/
+*.log
+*Zone.Identifier
+.DS_Store
+
+# --- Python / Jupyter / R ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.Rhistory
+.RData
+.Rproj.user/

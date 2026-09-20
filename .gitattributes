@@ -1,0 +1,3 @@
+# Notebooks are committed without outputs (outputs can embed data summaries and figures).
+# Needs nbstripout: `pip install nbstripout && nbstripout --install` (or use environment.yml).
+*.ipynb filter=nbstripout
