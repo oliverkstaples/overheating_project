@@ -1,41 +1,57 @@
 # Conda environment for the EFUS overheating workflow (Python + R).
 #   conda env create -f environment.yml
 #   conda activate efus
+#   Rscript -e 'install.packages("clubSandwich", repos = "https://cloud.r-project.org")'
 #
-# Built from the imports actually present in python/, R/ and the notebooks; it has not
-# been exported from the original environment (which lived on an old Linux machine).
-# Figures use scienceplots' "science" style, which also needs a system LaTeX install.
+# Rebuilt from the imports/runtime needs of python/, R/ and the notebooks (it was not
+# exported from the original environment, which lived on an old Linux machine).
+# Figures use scienceplots' "science" style, which needs a system LaTeX install
+# (latex + dvipng + dvisvgm, e.g. MacTeX / TeX Live).
+#
+# VALIDATED 2026-09-20 (macOS arm64): built from this file, then ran the daily pipeline
+# (datasets + GEE/LME models) for all 8 region x room x period arms, and for London living
+# room August the hourly LME script, plots and Part 3, plus the other python/ scripts and
+# 10 notebooks. Results reproduced the stored outputs. Not run: the remaining hourly R
+# scripts (parse-checked only) and notebooks whose diagnostics/ inputs are absent or stale.
+# Versions used (packages are unpinned, so later releases may behave differently):
+#   python 3.11.16, numpy 2.4.6, pandas 3.0.6, scipy 1.17.1, statsmodels 0.15.0,
+#   xarray 2026.7.0, matplotlib 3.11.2, R 4.5.3 (nlme 3.1.170, arrow 25.0.0, dplyr 1.2.1,
+#   geepack 1.3.13, lubridate 1.9.5), clubSandwich 0.7.0 (CRAN)
 name: efus
 channels:
   - conda-forge
 dependencies:
   - python=3.11
-  # --- Python ---
+  # --- Python: numerics / data ---
   - numpy
   - pandas
   - scipy
   - statsmodels
   - scikit-learn
-  - matplotlib
-  - pyarrow
-  - xarray
-  - netcdf4            # xarray backend for the UKCP18 .nc files
+  - pyarrow            # parquet I/O (pandas + R arrow)
+  - jinja2             # pandas DataFrame.to_latex (efus_descriptive_statistics.ipynb)
   - pgeocode
   - pyproj
+  # --- Python: climate data ---
+  - xarray
+  - netcdf4            # xarray backend for the UKCP18 .nc files
+  - cftime             # UKCP18 uses non-standard calendars (CFDatetimeCoder(use_cftime=True))
+  # --- Python: plotting ---
+  - matplotlib
+  - scienceplots
+  # --- Jupyter (notebooks use the `python3` kernel) ---
   - jupyter
+  - ipykernel
+  - ipython
   - nbformat
   - nbconvert
   - nbstripout         # git clean filter: keeps notebook outputs out of commits
-  - pip
-  - pip:
-      - scienceplots
-  # --- R ---
+  # --- R (efus_mm_*.R, efus_overheating_models*.R; efus_presentation_pipeline.ipynb calls Rscript) ---
   - r-base
   - r-nlme
   - r-arrow
   - r-dplyr
   - r-lubridate
   - r-geepack
-  # R package `clubSandwich` (used by R/efus_overheating_models.R) is not on conda-forge;
-  # after creating the env, install it from CRAN:
-  #   Rscript -e 'install.packages("clubSandwich", repos = "https://cloud.r-project.org")'
+  # `clubSandwich` (used by R/efus_overheating_models.R) is not on conda-forge; install it
+  # from CRAN after creating the env (command at the top of this file).

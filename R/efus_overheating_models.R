@@ -29,7 +29,7 @@
 #   - dwage_efus is included as a confounder: EPC band correlates strongly
 #     with construction era, which drives the apparent EPC C+ overheating
 #     paradox without age adjustment.
-#   - dwage reference = 7 (Post-2002): the most modern era is chosen as
+#   - dwage reference = 7 (Post-1990): the most modern era is chosen as
 #     reference so all coefficients show deviation from the newest stock.
 #
 # Inputs:  analysis/daily_overheating.parquet
@@ -92,7 +92,7 @@ cat(sprintf("  %d dwelling-day rows, %d dwellings, months: %s\n",
 # ── Factor coding ─────────────────────────────────────────────────────────────
 # EPC:    reference = 1  (C+, best performance)
 # dwtype: reference = 6  (Flat — highest prior overheating risk)
-# dwage:  reference = 4  (1964–1980 — largest age group, widest EPC mix)
+# dwage:  reference = 7  (post-1990 — newest stock; levels = c(7,1,...,6) below)
 # cooling: reference = 0 (no cooling)
 df$EPC     <- factor(df$EPceeb12e_efus, levels = c(1L, 2L, 3L, 4L))
 df$dwtype  <- factor(df$dwtype_efus,    levels = c(6L, 1L, 2L, 3L, 4L, 5L))
@@ -397,7 +397,7 @@ for (thr in THRESHOLDS) {
 # =============================================================================
 # GEE prediction grids — P(overheating criterion) vs T_2DMMT × EPC  (outdoor)
 #                         P(overheating criterion) vs T_2DMMnT × EPC (indoor night)
-# Reference: Flat (dwtype=6), post-2002 (dwage=7), no cooling
+# Reference: Flat (dwtype=6), post-1990 (dwage=7), no cooling
 # =============================================================================
 cat("\n── GEE prediction grids ────────────────────────────────────────────────\n")
 

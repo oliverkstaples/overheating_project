@@ -11,6 +11,7 @@ efficiency as a continuous red->blue colour gradient (no discrete EPC
 legend), arrow-style axis labels, top/right spines removed.
 """
 
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,6 +32,7 @@ CBAR_FS  = 12
 
 CSV  = f"analysis/{ROOM}/august/climate_projection.csv"
 OUTDIR = "plots/efus2017/london_livingroom_1month/description"
+os.makedirs(OUTDIR, exist_ok=True)
 
 df = pd.read_csv(CSV)
 df = df[df["threshold"] == THRESHOLD]

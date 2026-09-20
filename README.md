@@ -49,7 +49,8 @@ project root (all are git-ignored):
 |---|---|
 | `efus_indoor_outdoor_livingroom.parquet`, `efus_indoor_outdoor_bedroom.parquet` | Hourly `CaseID, hour, T_in, Location, T_out`, built from the raw EFUS sensor CSVs by `python/efus_extract_*.py` |
 | `test_data/ukda_9434_csv_r/csv/selected_interview_responses_caseid.csv` | Per-dwelling characteristics from the EFUS interview data (`dwtype_efus`, `dwage_efus`, `WallType2x_efus`, `InsulatedWalls_efus`, `FullyDblGlz_efus`, `floor6x_efus`, `EPceeb12e_efus`, `gorEHS_efus`, `AnyCooling`) |
-| `test_data/RCM/tasmax_rcp85_land-rcm_uk_region_*_day_*.nc` | UKCP18 12 km regional RCP8.5 daily `tasmax`, one file per ensemble member (Met Office) |
+| `test_data/RCM/tasmax_rcp85_land-rcm_uk_region_*_day_*.nc` | UKCP18 12 km regional RCP8.5 daily `tasmax`, one file per ensemble member (Met Office); used by Part 3 |
+| `test_data/GCM/tasmax_rcp85_land-gcm_uk_region_*_day_*.nc` *(optional)* | UKCP18 global-model RCP8.5 daily `tasmax`; used only by Figure 7 of `efus_overheating_model_plots.py` |
 
 EFUS data are available from the UK Data Service under their licence terms.
 
@@ -78,13 +79,15 @@ Outputs are written to `analysis/`, `diagnostics/` and `plots/` (created on firs
 
 ## Known issues
 
-- `python/efus_extract_*.py` and the `*_diagnostics.ipynb` notebooks contain hardcoded
-  paths from the original Linux machine (`/home/teaching/...`); edit them before running.
+- `python/efus_extract_*.py` need the raw hourly sensor CSVs in
+  `test_data/ukda_9434_csv_r/csv/tempdata_csv/`, which are not included.
 - Only `R/efus_mm_london_1month.R` has been refactored to i.i.d. + AR(1) residuals. The
   other `efus_mm_*` scripts still fit a custom SAR(1,24) correlation structure that was
   found to be mis-converged; treat those SAR results with caution.
-- `environment.yml` was rebuilt from the code's imports rather than exported from the
-  original environment.
+- `efus_mm_*_diagnostics.ipynb` notebooks read `diagnostics/*` produced by the matching
+  `efus_mm_*.R` script; run the R script first.
+- `environment.yml` was rebuilt from the code's imports (not exported from the original
+  environment) and validated against the pipeline; see its header for the tested versions.
 
 ## Status
 

@@ -12,10 +12,11 @@ import pandas as pd
 import numpy as np
 import os
 
-import os as _os; _os.chdir(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(ROOT)
 
-TEMPDIR  = "/home/teaching/heating/test_data/ukda_9434_csv_r/csv/tempdata_csv/"
-OUT_PATH = "/home/teaching/heating/efus_indoor_outdoor_livingroom.parquet"
+TEMPDIR  = os.path.join(ROOT, "test_data", "ukda_9434_csv_r", "csv", "tempdata_csv")
+OUT_PATH = os.path.join(ROOT, "efus_indoor_outdoor_livingroom.parquet")
 
 R_PRIORITY  = ["LR"]
 SUMMER_MONTHS = [5, 6, 7, 8, 9, 10]

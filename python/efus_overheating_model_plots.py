@@ -439,7 +439,7 @@ for row_i, (mname, thr) in enumerate([("gee_overheat_26", "26"), ("gee_overheat_
                      edgecolors=dark(col), linewidths=0.5)
 
     ax_a.set_xlabel(r"Outdoor $T_{2DMMT}$ ($^\circ$C)", fontsize=7)
-    ax_a.set_ylabel(r"P(met overheating criterion) (\%)" + "\n" + r"(dots: all dwelling types; lines: post-2002 flat, no cooling)",
+    ax_a.set_ylabel(r"P(met overheating criterion) (\%)" + "\n" + r"(dots: all dwelling types; lines: post-1990 flat, no cooling)",
                     fontsize=6)
     ax_a.set_title(f"Predicted (lines: ref. dwelling) vs observed (dots: all types)\n"
                    f"by EPC band --- {thr}$^\circ$C", fontsize=7)
@@ -607,7 +607,7 @@ for row_i, (mname, thr) in enumerate([("gee_overheat_26", "26"), ("gee_overheat_
 
 fig.suptitle(
     f"GEE model validation: predicted P(met overheating criterion) vs observed --- {ROOM_LABEL}s"
-    "\nA/D: ref. dwelling (Flat, post-2002, no cooling)"
+    "\nA/D: ref. dwelling (Flat, post-1990, no cooling)"
     r" $\cdot$ E: stock-averaged over all dwelling types within EPC band"
     r" $\cdot$ Dots = empirical rates $\cdot$ EFUS 2017",
     fontsize=8,
@@ -797,7 +797,9 @@ _GEE_REF_COOL    = 0
 _MIN_EPC_BAND    = 3   # minimum dwellings per EPC band for a reliable projection
 _MAX_COEF        = 100 # maximum tolerated |coefficient| before treating model as unreliable
 
-_NC_GLOB = os.path.join(ROOT, "test_data", "UKCP tasmax",
+# NB: this Figure 7 block uses the 28 UKCP18 *GCM* members (test_data/GCM, formerly
+# "UKCP tasmax"); Part 3 (efus_climate_projection.py) uses the 16 RCM members instead.
+_NC_GLOB = os.path.join(ROOT, "test_data", "GCM",
                         "tasmax_rcp85_land-gcm_uk_region_*_day_*.nc")
 
 # Fresh read of gee_coefs with original term names (not clim: normalised)
@@ -931,7 +933,9 @@ else:
                                          mean_exceed_pct=float(_seasonal_dw[_mask].mean())))
 
     _proj = pd.DataFrame(_records)
-    _proj.to_csv(os.path.join(ANALYSIS_DIR, "climate_projection.csv"), index=False)
+    # Written under a distinct name: climate_projection.csv is the authoritative Part 3
+    # (RCM, 16-member) output of efus_climate_projection.py and must not be overwritten here.
+    _proj.to_csv(os.path.join(ANALYSIS_DIR, "climate_projection_gcm.csv"), index=False)
 
     # Observed 2018 validation markers (stock-aggregated)
     _t2_obs  = daily_df.groupby("date_key")["T_2DMMT"].mean().values
@@ -993,7 +997,7 @@ else:
             col  = COLORS[3 - (_EPC_LEVELS.index(epc))]
             _row = _obs_df[(_obs_df.threshold == thr) & (_obs_df.epc == epc)]
             if len(_row):
-                ax7.scatter(2018, float(_row.mean_exceed_pct), marker="D", s=30, zorder=5,
+                ax7.scatter(2018, float(_row.mean_exceed_pct.iloc[0]), marker="D", s=30, zorder=5,
                             color="none", edgecolors=col, linewidths=1.3)
 
         ax7.axhline(CRIT_PCT, color="black", linewidth=0.8, linestyle="--", alpha=0.7, zorder=3)

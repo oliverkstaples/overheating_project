@@ -164,9 +164,9 @@ THRESHOLDS     = [26]
 EPC_LABELS     = {1: "C+", 2: "D", 3: "E", 4: "F/G"}
 DWTYPE_LABELS  = {1: "Detached", 2: "Semi-detached", 3: "End-terrace",
                   4: "Mid-terrace", 5: "Bungalow", 6: "Flat"}
-DWAGE_LABELS   = {1: "pre-1919", 2: "1919–44", 3: "1944–64",
-                  4: "1964–80", 5: "1980–90", 6: "1990–2002",
-                  7: "post-2002"}
+DWAGE_LABELS   = {1: "pre-1919", 2: "1919–44", 3: "1945–64",
+                  4: "1965–74", 5: "1975–80", 6: "1981–90",
+                  7: "post-1990"}
 
 NC_DIR  = os.path.join(ROOT, "test_data", "RCM")
 NC_GLOB = os.path.join(NC_DIR, "tasmax_rcp85_land-rcm_uk_region_*_day_*.nc")
@@ -174,7 +174,7 @@ NC_GLOB = os.path.join(NC_DIR, "tasmax_rcp85_land-rcm_uk_region_*_day_*.nc")
 # GEE factor reference levels — must match levels= coding in efus_overheating_models.R
 GEE_REF_EPC    = 1   # EPC C+
 GEE_REF_DWTYPE = 6   # Flat
-GEE_REF_DWAGE  = 7   # Post-2002
+GEE_REF_DWAGE  = 7   # Post-1990
 GEE_REF_COOL   = 0   # No cooling
 
 # ── Load GEE coefficients ─────────────────────────────────────────────────────
@@ -533,8 +533,8 @@ for thr in THRESHOLDS:
                                   (obs_actual_df.epc == epc)]
         pred_row = obs_modelpred_df[(obs_modelpred_df.threshold == thr) &
                                      (obs_modelpred_df.epc == epc)]
-        obs_val  = float(obs_row.obs_exceed_pct) if not obs_row.empty else float("nan")
-        pred_val = float(pred_row.mean_exceed_pct) if not pred_row.empty else float("nan")
+        obs_val  = float(obs_row.obs_exceed_pct.iloc[0]) if not obs_row.empty else float("nan")
+        pred_val = float(pred_row.mean_exceed_pct.iloc[0]) if not pred_row.empty else float("nan")
         print(f"    EPC {EPC_LABELS[epc]:3s}  observed={obs_val:.2f}%  "
               f"model-predicted={pred_val:.2f}%  "
               f"diff={pred_val - obs_val:+.2f}%")
@@ -765,7 +765,7 @@ for thr in THRESHOLDS:
         row = obs_fail_df2[(obs_fail_df2.threshold == thr) &
                             (obs_fail_df2.epc == epc)]
         if not row.empty:
-            print(f"    EPC {EPC_LABELS[epc]:3s}  {float(row.obs_pfail):.3f}")
+            print(f"    EPC {EPC_LABELS[epc]:3s}  {float(row.obs_pfail.iloc[0]):.3f}")
 
 # ── Figure 2 ──────────────────────────────────────────────────────────────────
 _ncol = len(THRESHOLDS)
@@ -793,7 +793,7 @@ for ax, thr in zip(axes2, THRESHOLDS):
                             (obs_fail_df2.epc == epc)]
         if row.empty:
             continue
-        ax.scatter(2018, float(row.obs_pfail), marker="D", s=30, zorder=5,
+        ax.scatter(2018, float(row.obs_pfail.iloc[0]), marker="D", s=30, zorder=5,
                    color=col, edgecolors=col)
 
     ax.set_xlabel("Year", fontsize=8)
